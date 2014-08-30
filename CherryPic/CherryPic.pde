@@ -12,6 +12,7 @@ int framesUntilNextPicture = 60 * 4;
 ProviderDelegate delegate;
 HardDriveProvider hdPro;
 TumblrProvider tmblrPro;
+int frameCounter = 0;
 
 /**********Net vars**********/
 
@@ -44,10 +45,17 @@ void setup() {
   currentImage = new ScreenImage(contentQueue.get(0).image, contentQueue.get(1).image);
   contentQueueIndex = 2;
   
-  tmblrPro.loadPics();
+  //contentQueue.add(tmblrPro.loadPics());
 }
 
 void draw() {
+  frame++;
+  
+  if(frame > 60)
+  {
+    TumblrProvider.checkForNewImages();  
+  }
+  
   background(0);
   currentImage.drawMe(this);
 
