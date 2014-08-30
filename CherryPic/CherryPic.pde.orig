@@ -12,7 +12,6 @@ int framesUntilNextPicture = 60 * 4;
 ProviderDelegate delegate;
 HardDriveProvider hdPro;
 TumblrProvider tmblrPro;
-int frameCounter = 0;
 
 /**********Net vars**********/
 
@@ -44,21 +43,15 @@ void setup() {
   };
   currentImage = new ScreenImage(contentQueue.get(0).image, contentQueue.get(1).image);
   contentQueueIndex = 2;
+  
+  tmblrPro.loadPics();
 }
 
 void draw() {
-  frame++;
-  
-  if(frame > 60)
-  {
-    TumblrProvider.checkForNewImages();  
-  }
-  
   background(0);
   currentImage.drawMe(this);
 
   //See if we need to change the picture yet.
-  //TODO make is so every change, the wait time is reset.
   if (frameCount % framesUntilNextPicture == framesUntilNextPicture -1) {
     debugPrint("Time up! Switching image.", "main.draw()");
     proceedToNextImage();
@@ -84,6 +77,7 @@ void drawUI() {
 }
 
 //Adds an image to the queue, and tosses it up front if it's urgent enough.
+<<<<<<< HEAD
 void addImageToQueue(Content newContent, boolean isUrgent) {
   if (isUrgent) {
     debugPrint("New urgent Image added to queue", "addImageToQueue");
@@ -95,6 +89,9 @@ void addImageToQueue(Content newContent, boolean isUrgent) {
     debugPrint("New non-urgent Image added to queue", "addImageToQueue");
     contentQueue.add(newContent);
   }
+=======
+void addImageToQueue(Content nextContent, boolean isUrgent) {
+>>>>>>> c86ccace8da30dda838f44e7618cf7f4882467f5
 }
 
 //Switches to the next image in the queue

@@ -21,7 +21,6 @@ class ScreenImage {
     //adjust for height
     if (img.height > picAreaHeight) {
       percentOff = (float)picAreaHeight / (float)img.height;
-      println("Percent off is " + percentOff);
       img.resize((int)(img.width * percentOff), (int)(img.height * percentOff));
     }
     //adjust for width
@@ -50,7 +49,7 @@ class ScreenImage {
   void drawMe(PApplet main) {
     //Draw the image depending on whether we're in the process of changing it or not. 
     if (!isChangingImage) {
-      tint(color(255),255);
+      tint(color(255), 255);
       main.imageMode(CENTER);
       main.image(currImage, width / 2, height / 2);
     } else {
@@ -59,22 +58,21 @@ class ScreenImage {
       case SWIPE://TODO make transition 
       case FADE:
         main.imageMode(CENTER);
-        float percentComplete = ((frameCount - frameTransitionStarted) / transitionTime);
-        tint(color(255), percentComplete * 255);
-        main.image(currImage, width / 2, height / 2);
-        tint(color(255), (1.0f - percentComplete) * 255);
+        float percentComplete = (((float)frameCount - (float)frameTransitionStarted) / transitionTime);
+        tint(255, percentComplete * 255);
         main.image(nextImage, width / 2, height / 2);
+        tint(255, (1.0f - percentComplete) * 255);
+        main.image(currImage, width / 2, height / 2);
+        //If we're done changing the image, reset the vars. 
+        if (frameCount == frameTransitionStarted + transitionTime -1) {
+          debugPrint("Done changing images out", "ScreenImage.drawMe()");
+          isChangingImage = false;
+          currImage = nextImage;
+          nextImage = tempImage;
+          tempImage = null; //No being stupid!
+          sizeImage(nextImage);
+        }
         break;
-      }
-      
-      //If we're done changing the image, reset the vars. 
-      if (frameCount == frameTransitionStarted + transitionTime) {
-        debugPrint("Done changing images out", "ScreenImage.drawMe()");
-        isChangingImage = false;
-        currImage = nextImage;
-        nextImage = tempImage;
-        tempImage = null; //No being stupid!
-        sizeImage(currImage);
       }
     }
   }
