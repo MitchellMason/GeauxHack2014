@@ -11,6 +11,7 @@ int framesUntilNextPicture = 60 * 3;
 //Content Providers
 ProviderDelegate delegate;
 HardDriveProvider hdPro;
+TumblrProvider tmblrPro;
 
 /**********Net vars**********/
 
@@ -31,13 +32,18 @@ void setup() {
   delegate = new ProviderDelegate(this);
   hdPro = new HardDriveProvider(delegate);
   hdPro.start();
+  
+  tmblrPro = new TumblrProvider(delegate);
+  tmblrPro.start();
 
   //Get first few pictures and get them into the screen
   for (int i=0; i<5; i++) {
     contentQueue.add(hdPro.forceNextPicture());
-  }
+  };
   currentImage = new ScreenImage(contentQueue.get(0).image, contentQueue.get(1).image);
   contentQueueIndex = 2;
+  
+  tmblrPro.loadPics();
 }
 
 void draw() {
@@ -68,18 +74,7 @@ void drawUI() {
 }
 
 //Adds an image to the queue, and tosses it up front if it's urgent enough.
-void addImageToQueue(Content newContent, boolean isUrgent) {
-  if(isUrgent){
-    debugPrint("New urgent Image added to queue","addImageToQueue");
-    Content toSwitch = contentQueue.get(contentQueueIndex + 1);
-    contentQueue.set(contentQueueIndex+1, newContent);
-    contentQueue.add(toSwitch);
-    proceedToNextImage();  
-  }
-  else{
-    debugPrint("New non-urgent Image added to queue","addImageToQueue");
-    ContentQueue.add(nextContent);
-  }
+void addImageToQueue(Content nextContent, boolean isUrgent) {
 }
 
 //Switches to the next image in the queue
