@@ -35,8 +35,7 @@ class HardDriveProvider extends ContentProvider{
       retList[i] = tempListOfPics.get(i);
     }
     
-    print("Loaded pictures from HD: ");
-    println(retList);
+    debugPrint("Loaded pictures from HD.","HDProvider");
     return retList; 
   }
 }
