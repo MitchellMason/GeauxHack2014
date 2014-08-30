@@ -7,7 +7,7 @@ final int screenHeight = 720;
 final int picAreaHeight= 600;
 final int picAreaWidth = 1000;
 //Time until the frame changes
-int framesUntilNextPicture = 60 * 3;
+int framesUntilNextPicture = 60 * 4;
 //Content Providers
 ProviderDelegate delegate;
 HardDriveProvider hdPro;
@@ -19,6 +19,7 @@ HardDriveProvider hdPro;
 //Maybe make a color scheme? 
 ScreenImage currentImage;
 ArrayList<Content> contentQueue;
+final int transitionTime = 60; //Time until a transition finishes. 
 //index of the current image from the contentqueue
 int contentQueueIndex;
 
@@ -59,6 +60,8 @@ void draw() {
   drawUI();
 }
 
+
+
 //Draw the comment box
 void drawCommentBox() {
 }
@@ -69,16 +72,15 @@ void drawUI() {
 
 //Adds an image to the queue, and tosses it up front if it's urgent enough.
 void addImageToQueue(Content newContent, boolean isUrgent) {
-  if(isUrgent){
-    debugPrint("New urgent Image added to queue","addImageToQueue");
+  if (isUrgent) {
+    debugPrint("New urgent Image added to queue", "addImageToQueue");
     Content toSwitch = contentQueue.get(contentQueueIndex + 1);
     contentQueue.set(contentQueueIndex+1, newContent);
     contentQueue.add(toSwitch);
-    proceedToNextImage();  
-  }
-  else{
-    debugPrint("New non-urgent Image added to queue","addImageToQueue");
-    ContentQueue.add(nextContent);
+    proceedToNextImage();
+  } else {
+    debugPrint("New non-urgent Image added to queue", "addImageToQueue");
+    contentQueue.add(newContent);
   }
 }
 
@@ -87,8 +89,7 @@ void proceedToNextImage() {
   Content temp;
   if (contentQueueIndex+1 >= contentQueue.size()) {
     contentQueueIndex = 0;
-  }
-  else{
+  } else {
     contentQueueIndex++;
   }
   temp = contentQueue.get(contentQueueIndex);

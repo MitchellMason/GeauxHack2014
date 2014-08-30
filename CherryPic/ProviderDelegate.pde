@@ -1,6 +1,6 @@
 class ProviderDelegate{
-  PApplet main;
-  ProviderDelegate(PApplet main){
+  CherryPic main;
+  ProviderDelegate(CherryPic main){
     this.main = main;
   }
   
