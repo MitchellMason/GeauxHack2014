@@ -68,7 +68,18 @@ void drawUI() {
 }
 
 //Adds an image to the queue, and tosses it up front if it's urgent enough.
-void addImageToQueue(Content nextContent, boolean isUrgent) {
+void addImageToQueue(Content newContent, boolean isUrgent) {
+  if(isUrgent){
+    debugPrint("New urgent Image added to queue","addImageToQueue");
+    Content toSwitch = contentQueue.get(contentQueueIndex + 1);
+    contentQueue.set(contentQueueIndex+1, newContent);
+    contentQueue.add(toSwitch);
+    proceedToNextImage();  
+  }
+  else{
+    debugPrint("New non-urgent Image added to queue","addImageToQueue");
+    ContentQueue.add(nextContent);
+  }
 }
 
 //Switches to the next image in the queue
