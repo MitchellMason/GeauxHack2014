@@ -1,7 +1,11 @@
 abstract class ContentProvider extends Thread{
-  ContentProvider(ProviderDelegate delegate){};
-  PImage forceNextPicture(){
-    println("Not implemented");
-    return null;
-  };
+  ProviderDelegate delegate;
+  
+  ContentProvider(ProviderDelegate delegate){
+    this.delegate = delegate;
+  }
+  
+  //override me!
+  //Force a picture to load. Use only at initial load time. 
+  abstract PImage forceNextPicture();
 }
