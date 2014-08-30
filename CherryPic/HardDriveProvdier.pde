@@ -24,16 +24,18 @@ class HardDriveProvider extends ContentProvider{
     ArrayList<PImage> tempListOfPics = new ArrayList<PImage>();
     
     for(int i=0; i<pictureFiles.length; i++){
-      if(pictureFiles[i].toString().contains(".jpg")){
+      if(pictureFiles[i].toString().contains(".jpg") || pictureFiles[i].toString().contains(".png")){
         tempListOfPics.add(loadImage(pictureFiles[i].toString()));
       }
     }
-    
+    //Convert from arraylist to fixed array
     PImage[] retList = new PImage[tempListOfPics.size()];
-<<<<<<< HEAD
+    for(int i=0; i<tempListOfPics.size(); i++){
+      retList[i] = tempListOfPics.get(i);
+    }
     
-=======
->>>>>>> 95e8bfaba2896168fd60731da921e2036da8fb18
+    print("Loaded pictures from HD: ");
+    println(retList);
     return retList; 
   }
 }
