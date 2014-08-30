@@ -30,7 +30,10 @@ class HardDriveProvider extends ContentProvider{
     }
     
     PImage[] retList = new PImage[tempListOfPics.size()];
+<<<<<<< HEAD
     
+=======
+>>>>>>> 95e8bfaba2896168fd60731da921e2036da8fb18
     return retList; 
   }
 }
