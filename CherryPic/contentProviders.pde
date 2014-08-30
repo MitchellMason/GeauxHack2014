@@ -7,5 +7,5 @@ abstract class ContentProvider extends Thread{
   
   //override me!
   //Force a picture to load. Use only at initial load time. 
-  abstract PImage forceNextPicture();
+  abstract Content forceNextPicture();
 }

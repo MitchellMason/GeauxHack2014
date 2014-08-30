@@ -1,3 +1,4 @@
+//Has a delegate, but shouldn't use it. Pictures are beaten out only. 
 class HardDriveProvider extends ContentProvider{
   
   String pathToPics = "/images";
@@ -12,8 +13,8 @@ class HardDriveProvider extends ContentProvider{
     loadedPics = loadPics();
   }
   
-  PImage forceNextPicture(){
-    return loadedPics[(int)random(0,loadedPics.length)];
+  Content forceNextPicture(){
+    return new Content(loadedPics[(int)random(0,loadedPics.length)], null, Source.HARDDRIVE);
   }
   
   PImage[] loadPics(){
