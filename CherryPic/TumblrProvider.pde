@@ -16,26 +16,12 @@ class TumblrProvider extends ContentProvider {
 
   String pathToPics = "/images";
   PImage loadedPics[];
+  JumblrClient client;
 
   TumblrProvider(ProviderDelegate delegate) {
     super(delegate);
-  }
-
-  //Called at the start of the thread.
-  void start() {
-    loadedPics = loadPics();
-  }
-
-  Content forceNextPicture() {
-    //return null;
-    return new Content(loadedPics[(int)random(0, loadedPics.length)], "", Source.TUMBLR);
-  }
-
-  PImage[] loadPics() {
     
-    ArrayList<PImage> tempListOfPics = new ArrayList<PImage>();
-    
-    JumblrClient client = new JumblrClient(
+    client = new JumblrClient(
       "IMsypM9lJL3Xhkxn3mNGWbQrm8Pfzb4kE3Z7BDQtQ24T5alp2j",
       "WEnNITaXYPBdUcPrV1wRAARn9DY3cthtqRfPs6my1SIm3kw6AJ"
     );
@@ -43,6 +29,50 @@ class TumblrProvider extends ContentProvider {
       "cSuwaPdeLMt3ewCGyamQ5rV6dkw75ZSvwfuZSqtgwtwr9FhpYF",
       "I1RjJ447nYlMFDDysn23NWIHC1sYsf8Sz887PftJQJ5GyWeHWE"
     );
+    
+  }
+
+  //Called at the start of the thread.
+  void start() {
+    //loadedPics = loadPics();
+  }
+
+  Content forceNextPicture() {
+    //return null;
+    
+    List<Post> posts = client.userDashboard();
+    
+    for(Post post : posts)
+    {
+      if(post instanceof PhotoPost)
+      {
+        List<Photo> photos = ((PhotoPost) post).getPhotos();
+        
+        for(Photo pic : photos)
+        {
+           String url = pic.getSizes().get(0).getUrl();
+           println("loaded pic at " + url);
+           return new Content(loadImage(url), "", Source.TUMBLR);
+        }
+      }
+    }
+    
+    return null;
+  }
+  
+  void loadPicsToQueue(){
+    
+   PImage[] images = loadPics(); 
+    
+    for(PImage image : images)
+    {
+        delegate.pushContent(new Content(image,null,Source.TUMBLR)); 
+    }
+  }
+
+  PImage[] loadPics() {
+    
+    ArrayList<PImage> tempListOfPics = new ArrayList<PImage>();
 
     //User user = client.user();
     

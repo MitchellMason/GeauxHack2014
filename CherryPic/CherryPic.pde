@@ -11,6 +11,7 @@ int framesUntilNextPicture = 60 * 4;
 //Content Providers
 ProviderDelegate delegate;
 HardDriveProvider hdPro;
+TumblrProvider tmblrPro;
 
 /**********Net vars**********/
 
@@ -32,13 +33,18 @@ void setup() {
   delegate = new ProviderDelegate(this);
   hdPro = new HardDriveProvider(delegate);
   hdPro.start();
+  
+  tmblrPro = new TumblrProvider(delegate);
+  tmblrPro.start();
 
   //Get first few pictures and get them into the screen
   for (int i=0; i<5; i++) {
     contentQueue.add(hdPro.forceNextPicture());
-  }
+  };
   currentImage = new ScreenImage(contentQueue.get(0).image, contentQueue.get(1).image);
   contentQueueIndex = 2;
+  
+  tmblrPro.loadPics();
 }
 
 void draw() {
