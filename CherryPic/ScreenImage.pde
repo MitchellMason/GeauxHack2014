@@ -32,6 +32,18 @@ class ScreenImage {
       percentOff = (float)picAreaWidth / (float)img.width;
       img.resize((int)(img.width * percentOff), (int)(img.height * percentOff));
     }
+    
+    if (img.height < (picAreaHeight - 50)){
+      percentOff = (float)picAreaHeight / (float)img.height;
+      img.resize((int)(img.width * percentOff), (int)(img.height * percentOff));
+    }
+    
+    if (img.width < (picAreaWidth - 50)){
+      percentOff = (float)picAreaWidth / (float)img.width;
+      img.resize((int)(img.width * percentOff), (int)(img.height * percentOff));
+    }
+    
+    
   }
 
   //utility method to get a new transition

@@ -73,15 +73,16 @@ void setup() {
 
   logo.resize((int)(iconHeight / (1/1.438)), iconHeight);
   for (int i=0; i<socialMediaLogos.length; i++) {
-    socialMediaLogos[i].resize(iconHeight, iconHeight);
+    socialMediaLogos[i].resize(iconHeight * 2, iconHeight * 2);
   }
 
   //Get first few pictures and get them into the screen
-  for (int i=0; i<5; i++) {
+  int totalFiles = 13;
+  for (int i=0; i<totalFiles; i++) {
     addImageToQueue(hdPro.forceNextPicture(), false);
   };
   contentQueueIndex = 0;
-  currentImage = new ScreenImage(logoBig, loadImage("images/Boss2.png"));
+  currentImage = new ScreenImage(logoBig, logoBig);
   changeChannel();
 }
 
@@ -134,13 +135,13 @@ void drawUI() {
   //Draw the image channel
   switch(currentContentSource) {
   case HARDDRIVE:
-    image(socialMediaLogos[4], 0, height - iconHeight);
+    image(socialMediaLogos[4], 0, height - (iconHeight * 2));
     break;
   case TUMBLR:
-    image(socialMediaLogos[1], 0, height - iconHeight);
+    image(socialMediaLogos[1], 0, height - (iconHeight * 2));
     break;
   case FACEBOOK:
-    image(socialMediaLogos[0], 0, height - iconHeight);
+    image(socialMediaLogos[0], 0, height - (iconHeight * 2));
   default: 
     break;
   }
