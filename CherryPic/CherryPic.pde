@@ -69,9 +69,9 @@ void draw() {
   //Draw the title bar and logo
   drawUI();
 
-  if (frameCounter > 180)
+  if (frameCounter > 190)
   {
-    //tmblrPro.checkForNewImages();
+    tmblrPro.checkForNewImages();
   }
 }
 
