@@ -10,13 +10,15 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.HashMap;
 
 class TumblrProvider extends ContentProvider {
 
   String pathToPics = "/images";
   PImage loadedPics[];
   JumblrClient client;
+  
+  HashMap usedPics = new HashMap();
 
   TumblrProvider(ProviderDelegate delegate) {
     super(delegate);
@@ -34,7 +36,7 @@ class TumblrProvider extends ContentProvider {
 
   //Called at the start of the thread.
   void start() {
-    //loadedPics = loadPics();
+    //loadedPics = loadPics();  loadPicsToQueue();
   }
 
   Content forceNextPicture() {
@@ -51,13 +53,47 @@ class TumblrProvider extends ContentProvider {
         for(Photo pic : photos)
         {
            String url = pic.getSizes().get(0).getUrl();
-           println("loaded pic at " + url);
-           return new Content(loadImage(url), "", Source.TUMBLR);
+           
+           if(!usedPics.containsKey(url))
+           {
+             println("loaded pic at " + url);
+             usedPics.put(url,null);
+             return new Content(loadImage(url), "", Source.TUMBLR);
+           }
         }
       }
     }
     
     return null;
+  }
+  
+  void checkForNewImages()
+  { 
+    List<Post> posts = client.userDashboard();
+    for(Post post : posts)
+    {
+      if(post instanceof PhotoPost)
+      {
+        List<Photo> photos = ((PhotoPost) post).getPhotos();
+        
+        for(Photo pic : photos)
+        {
+           String url = pic.getSizes().get(0).getUrl();
+           
+           if(!usedPics.containsKey(url))
+           {
+             println("loaded pic at " + url);
+             usedPics.put(url,null);
+             delegate.pushContent(new Content(loadImage(url), "", Source.TUMBLR));
+           }
+           else
+           {
+             return; 
+           }
+        }
+      }
+    }
+    
   }
   
   void loadPicsToQueue(){
@@ -86,9 +122,13 @@ class TumblrProvider extends ContentProvider {
         
         for(Photo pic : photos)
         {
-           String url = pic.getSizes().get(0).getUrl();
-           tempListOfPics.add(loadImage(url));
-           println("loaded pic at " + url);
+           if(!usedPics.containsKey(url))
+           {
+             String url = pic.getSizes().get(0).getUrl();
+             tempListOfPics.add(loadImage(url));
+             usedPics.put(url,null);
+             println("loaded pic at " + url);
+           }
           
         }
       }

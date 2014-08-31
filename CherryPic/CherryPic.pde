@@ -14,6 +14,7 @@ final int frameSwitchDelay = 60 * 4;
 ProviderDelegate delegate;
 HardDriveProvider hdPro;
 TumblrProvider tmblrPro;
+int frameCounter = 0;
 
 /**********Graphics vars**********/
 //Maybe make a color scheme? 
@@ -48,7 +49,18 @@ void setup() {
 }
 
 void draw() {
+<<<<<<< HEAD
   background(baseColor);
+=======
+  frame++;
+  
+  if(frame > 60)
+  {
+    TumblrProvider.checkForNewImages();  
+  }
+  
+  background(0);
+>>>>>>> aa8f7804d2fe53050e29a247977d8e436b4e1f88
   currentImage.drawMe(this);
 
   //See if we need to change the picture yet.
