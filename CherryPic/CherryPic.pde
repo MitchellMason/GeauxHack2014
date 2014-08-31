@@ -14,7 +14,7 @@ final int frameSwitchDelay = 60 * 4;
 ProviderDelegate delegate;
 HardDriveProvider hdPro;
 TumblrProvider tmblrPro;
-int frameCounter = 0;
+int frameCounter = 178;
 
 /**********Graphics vars**********/
 //Maybe make a color scheme? 
@@ -36,7 +36,7 @@ void setup() {
   delegate = new ProviderDelegate(this);
   hdPro = new HardDriveProvider(delegate);
   hdPro.start();
-  
+
   tmblrPro = new TumblrProvider(delegate);
   tmblrPro.start();
 
@@ -49,16 +49,8 @@ void setup() {
 }
 
 void draw() {
-<<<<<<< HEAD
-  background(baseColor);
-=======
-  frame++;
-  
-  if(frame > 60)
-  {
-    TumblrProvider.checkForNewImages();  
-  }
-  
+  frameCounter++;
+
   background(0);
 >>>>>>> aa8f7804d2fe53050e29a247977d8e436b4e1f88
   currentImage.drawMe(this);
@@ -103,7 +95,8 @@ void addImageToQueue(Content newContent, boolean isUrgent) {
     contentQueue.set(contentQueueIndex+1, newContent);
     contentQueue.add(toSwitch);
     proceedToNextImage();
-  } else {
+  } 
+  else {
     debugPrint("New non-urgent Image added to queue", "addImageToQueue");
     contentQueue.add(newContent);
   }
@@ -114,7 +107,8 @@ void proceedToNextImage() {
   Content temp;
   if (contentQueueIndex+1 >= contentQueue.size()) {
     contentQueueIndex = 0;
-  } else {
+  } 
+  else {
     contentQueueIndex++;
   }
   temp = contentQueue.get(contentQueueIndex);
