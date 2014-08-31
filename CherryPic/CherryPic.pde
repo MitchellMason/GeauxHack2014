@@ -1,12 +1,14 @@
+import java.util.Date;
+
 /**********Logic vars**********/
 final boolean ISDEBUG = true; //TODO set to false for presentation. 
 //Screen dimensions
 final int screenWidth  = 1280;
 final int screenHeight = 720;
 //Dimensions of the area pictures can be drawn.
-final int picAreaHeight= 600;
+final int picAreaHeight= screenHeight - 150;
 final int picAreaWidth = 1000;
-final int iconHeight   = screenHeight - picAreaHeight;
+final int iconHeight   = (screenHeight - picAreaHeight) / 2;
 //Switch the picture on this frame#
 int picSwitchFrame = 60 * 4;
 final int frameSwitchDelay = 60 * 4;
@@ -14,7 +16,7 @@ final int frameSwitchDelay = 60 * 4;
 ProviderDelegate delegate;
 HardDriveProvider hdPro;
 TumblrProvider tmblrPro;
-int frameCounter = 178;
+Date date = new Date();
 
 /**********Graphics vars**********/
 //Maybe make a color scheme? 
@@ -23,9 +25,12 @@ ArrayList<Content> contentQueue;
 final int transitionTime = 60; //Time until a transition finishes. 
 //index of the current image from the contentqueue
 int contentQueueIndex;
-final color baseColor         = color(255,0,101);
-final color brightAccentColor = color(255,234,25);
-final color darkAccentColor   = color(9,148,178);
+//color palette
+final color baseColor         = color(175);
+final color brightAccentColor = color(57,234,58);
+final color darkAccentColor   = color(9, 148, 178);
+PImage logo;
+PImage[] socialMediaLogos = new PImage[4];
 
 void setup() {
   //Init graphics
@@ -35,10 +40,22 @@ void setup() {
   //Init providers
   delegate = new ProviderDelegate(this);
   hdPro = new HardDriveProvider(delegate);
-  hdPro.start();
 
   tmblrPro = new TumblrProvider(delegate);
   tmblrPro.start();
+
+  //heavy loading:
+  hdPro.init();
+  logo = loadImage("Logos/CherryPicLogo.png");
+  socialMediaLogos[0] = loadImage("Logos/Facebook.png");
+  socialMediaLogos[1] = loadImage("Logos/Tumblr.png");
+  socialMediaLogos[2] = loadImage("Logos/Twitter.png");
+  socialMediaLogos[3] = loadImage("Logos/Reddit.png");
+
+  logo.resize((int)(iconHeight / (1/1.438)), iconHeight);
+  for (int i=0; i<socialMediaLogos.length; i++) {
+    socialMediaLogos[i].resize(iconHeight, iconHeight);
+  }
 
   //Get first few pictures and get them into the screen
   for (int i=0; i<5; i++) {
@@ -49,10 +66,7 @@ void setup() {
 }
 
 void draw() {
-  frameCounter++;
-
-  background(0);
->>>>>>> aa8f7804d2fe53050e29a247977d8e436b4e1f88
+  background(baseColor);
   currentImage.drawMe(this);
 
   //See if we need to change the picture yet.
@@ -65,7 +79,7 @@ void draw() {
 
   //if there's a comment, draw it
   if (contentQueue.get(contentQueueIndex).optionalText != null) {
-    drawCommentBox();
+    drawCommentBox(contentQueue.get(contentQueueIndex).optionalText);
   }
 
   //Draw the title bar and logo
@@ -75,16 +89,50 @@ void draw() {
 
 
 //Draw the comment box
-void drawCommentBox() {
+void drawCommentBox(String text) {
 }
 
 //Draw the bar at the top with the logos. 
 void drawUI() {
-  stroke(0);
+  //draw the UI top bar
+  noStroke();
   fill(brightAccentColor);
-  rect(0,0,width, iconHeight);
+  rect(0, 0, width, iconHeight);
   fill(darkAccentColor);
-  rect(0,0,iconHeight,iconHeight);
+  rect(0, 0, logo.width +1, iconHeight);
+  
+  //Line for thickness at the top
+  stroke(255);
+  line(0,iconHeight,width,iconHeight);
+
+  //Draw the logo
+  imageMode(CORNERS);
+  tint(255, 255);
+  image(logo, 2, 0);
+
+  //Draw the image channel
+  Source contentSource = contentQueue.get(0).getSource();
+  switch(contentSource) {
+  case HARDDRIVE:
+    fill(0);
+    textSize(iconHeight *2);
+    text("HD",0,height - iconHeight - 10);
+    break;
+  default: 
+    break;
+  }
+  
+  //temporarily tell the user they're looking at the image source
+  if(frameCount < 6 * 60){
+    textSize(15);
+    fill(255);
+    text("← Media channel. Swipe to change.",iconHeight * 2,300);
+  }
+  
+  //print the system time
+  textSize(15);
+  fill(0);
+  text(date.toString().substring(0,19), width - textWidth(date.toString().substring(0,19)) - 10, iconHeight - 3);
 }
 
 //Adds an image to the queue, and tosses it up front if it's urgent enough.
@@ -95,8 +143,7 @@ void addImageToQueue(Content newContent, boolean isUrgent) {
     contentQueue.set(contentQueueIndex+1, newContent);
     contentQueue.add(toSwitch);
     proceedToNextImage();
-  } 
-  else {
+  } else {
     debugPrint("New non-urgent Image added to queue", "addImageToQueue");
     contentQueue.add(newContent);
   }
@@ -107,8 +154,7 @@ void proceedToNextImage() {
   Content temp;
   if (contentQueueIndex+1 >= contentQueue.size()) {
     contentQueueIndex = 0;
-  } 
-  else {
+  } else {
     contentQueueIndex++;
   }
   temp = contentQueue.get(contentQueueIndex);
