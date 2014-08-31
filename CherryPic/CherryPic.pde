@@ -16,7 +16,7 @@ final int frameSwitchDelay = 60 * 4;
 ProviderDelegate delegate;
 HardDriveProvider hdPro;
 TumblrProvider tmblrPro;
-//FacebookProvider facebkPro;
+FacebookProvider facebkPro;
 LeapDelegate leap;
 Date date = new Date();
 Source currentContentSource = Source.TUMBLR; //ToStart
@@ -51,8 +51,8 @@ void setup() {
   tmblrPro = new TumblrProvider(delegate);
   tmblrPro.start();
 
-  //facebkPro = new FacebookProvider(delegate);
-  //facebkPro.start();
+  facebkPro = new FacebookProvider(delegate);
+  facebkPro.start();
 
   //heavy loading:
   hdPro.init();
@@ -133,16 +133,17 @@ void drawUI() {
   case TUMBLR:
     image(socialMediaLogos[1], 0, height - iconHeight);
     break;
+  case FACEBOOK:
+    image(socialMediaLogos[0], 0, height - iconHeight);
   default: 
     break;
   }
 
   //temporarily tell the user they're looking at the image source
   if (frameCount < 6 * 60) {
-    textSize(15);
+    textSize(30);
     fill(darkAccentColor);
-    text("← Media channel", iconHeight * 3, height * .75);
-    text("  Swipe to change", iconHeight* 3, height * .75 + 15);
+    text("← Media channel Swipe to change", iconHeight * 1.25, height - 20);
   }
 
   //print the system time
@@ -197,7 +198,11 @@ void changeChannel() {
     debugPrint("New channel is Tumblr", "changeChannel");
     break;
   case TUMBLR:
-    currentContentSource = Source.HARDDRIVE;
+    currentContentSource = Source.FACEBOOK;
+    debugPrint("New channel is FB", "changeChannel");
+    break;
+  case FACEBOOK:
+      currentContentSource = Source.HARDDRIVE;
     debugPrint("New channel is HD", "changeChannel");
     break;
   }
