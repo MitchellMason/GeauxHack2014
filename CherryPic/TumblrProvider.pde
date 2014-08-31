@@ -69,7 +69,10 @@ class TumblrProvider extends ContentProvider {
   
   void checkForNewImages()
   { 
-    List<Post> posts = client.userDashboard();
+    List<Post> posts;
+    try{  posts = client.userDashboard();  }
+    catch(Exception e) { println("OAuth Exception");  return;}
+    
     for(Post post : posts)
     {
       if(post instanceof PhotoPost)
@@ -122,9 +125,9 @@ class TumblrProvider extends ContentProvider {
         
         for(Photo pic : photos)
         {
+          String url = pic.getSizes().get(0).getUrl();
            if(!usedPics.containsKey(url))
            {
-             String url = pic.getSizes().get(0).getUrl();
              tempListOfPics.add(loadImage(url));
              usedPics.put(url,null);
              println("loaded pic at " + url);

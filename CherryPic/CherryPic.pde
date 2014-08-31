@@ -12,7 +12,7 @@ int framesUntilNextPicture = 60 * 4;
 ProviderDelegate delegate;
 HardDriveProvider hdPro;
 TumblrProvider tmblrPro;
-int frameCounter = 0;
+int frameCounter = 178;
 
 /**********Net vars**********/
 
@@ -34,9 +34,11 @@ void setup() {
   delegate = new ProviderDelegate(this);
   hdPro = new HardDriveProvider(delegate);
   hdPro.start();
-  
+
   tmblrPro = new TumblrProvider(delegate);
   tmblrPro.start();
+
+  //tmblrPro.loadPicsToQueue();
 
   //Get first few pictures and get them into the screen
   for (int i=0; i<5; i++) {
@@ -47,13 +49,8 @@ void setup() {
 }
 
 void draw() {
-  frame++;
-  
-  if(frame > 60)
-  {
-    TumblrProvider.checkForNewImages();  
-  }
-  
+  frameCounter++;
+
   background(0);
   currentImage.drawMe(this);
 
@@ -71,6 +68,11 @@ void draw() {
 
   //Draw the title bar and logo
   drawUI();
+
+  if (frameCounter > 180)
+  {
+    //tmblrPro.checkForNewImages();
+  }
 }
 
 
@@ -91,7 +93,8 @@ void addImageToQueue(Content newContent, boolean isUrgent) {
     contentQueue.set(contentQueueIndex+1, newContent);
     contentQueue.add(toSwitch);
     proceedToNextImage();
-  } else {
+  } 
+  else {
     debugPrint("New non-urgent Image added to queue", "addImageToQueue");
     contentQueue.add(newContent);
   }
@@ -102,7 +105,8 @@ void proceedToNextImage() {
   Content temp;
   if (contentQueueIndex+1 >= contentQueue.size()) {
     contentQueueIndex = 0;
-  } else {
+  } 
+  else {
     contentQueueIndex++;
   }
   temp = contentQueue.get(contentQueueIndex);
