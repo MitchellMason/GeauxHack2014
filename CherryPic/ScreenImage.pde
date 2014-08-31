@@ -51,7 +51,7 @@ class ScreenImage {
     if (!isChangingImage) {
       tint(color(255), 255);
       main.imageMode(CENTER);
-      main.image(currImage, width / 2, height / 2);
+      main.image(currImage, width / 2, height / 2 + iconHeight);
     } else {
       switch(transition) {
       case NONE: //TODO make transition
@@ -60,9 +60,9 @@ class ScreenImage {
         main.imageMode(CENTER);
         float percentComplete = (((float)frameCount - (float)frameTransitionStarted) / transitionTime);
         tint(255, percentComplete * 255);
-        main.image(nextImage, width / 2, height / 2);
+        main.image(nextImage, width / 2, height / 2+ iconHeight);
         tint(255, (1.0f - percentComplete) * 255);
-        main.image(currImage, width / 2, height / 2);
+        main.image(currImage, width / 2, height / 2+ iconHeight);
         //If we're done changing the image, reset the vars. 
         if (frameCount == frameTransitionStarted + transitionTime -1) {
           debugPrint("Done changing images out", "ScreenImage.drawMe()");
