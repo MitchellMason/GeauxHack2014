@@ -1,14 +1,14 @@
 //CAACEdEose0cBAFYVInCp7ZAgAAO2EmrGRId6OobhQFOer40aDZAfm0Q0M41PLgne3AAMC7rENi2t2LSyBVhDbnfKwPTu24wkkfZAOuNDQEBqQ0uCZByPeSXer3uo7dbiYxU2Vj0pbSDZAIL4rr0UCa2N2ZCZCdMmcUKlDV7LVQGdwZBIeCw0cNYEWZAg0xKfaDCcMPmekuToQ0mhT7aFfZCB2a
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+//import com.google.gson.JsonObject;
+//import com.google.gson.JsonParser;
 import java.util.HashMap;
 import java.util.List;
-import com.restfb.BinaryAttachment;
-import com.restfb.DefaultFacebookClient;
-import com.restfb.FacebookClient;
-import com.restfb.Parameter;
-import com.restfb.types.FacebookType;
+//import com.restfb.BinaryAttachment;
+//import com.restfb.DefaultFacebookClient;
+//import com.restfb.FacebookClient;
+//import com.restfb.Parameter;
+import com.restfb.*;
 
 class FacebookProvider extends ContentProvider {
 
@@ -18,36 +18,42 @@ class FacebookProvider extends ContentProvider {
 
   FacebookProvider(ProviderDelegate delegate) {
     super(delegate);
-
-    facebookClient = new DefaultFacebookClient("CAACEdEose0cBAFYVInCp7ZAgAAO2EmrGRId6OobhQFOer40aDZAfm0Q0M41PLgne3AAMC7rENi2t2LSyBVhDbnfKwPTu24wkkfZAOuNDQEBqQ0uCZByPeSXer3uo7dbiYxU2Vj0pbSDZAIL4rr0UCa2N2ZCZCdMmcUKlDV7LVQGdwZBIeCw0cNYEWZAg0xKfaDCcMPmekuToQ0mhT7aFfZCB2a");
+    facebookClient = new DefaultFacebookClient("CAACEdEose0cBAJWXev9oTIImMEtyJ3lG4yVXHhVkJ5i2GK4EGoiYvIVuGeCjwElsxFDeEZCltbXbnJy1ivd7eGVh5fgDevWEjVDmzUZA4a6ZCfX2YshRZAN3fII4LcTBTIlpzzPH73oKv3fZB5MvajaZBT4tkTCMXB7MHeMC1nTLNbQRFFy5QVhQiJxE0MURoaWbNcVG5fZB3NrZCHj3r5du");
+    //facebookClient = new DefaultFacebookClient("CAACzPrVD3z8BAMeJqYhqt3l5baGgZB6QSjRIFYkVQc5kJoJDSNX8UMNZBrJhaEMHdVJcKIBWKCwzmyBjqWhquLQCW3EGGX6g2G5ugFsXkonVHpMMxEHZA58hRU0KwubPWJttepylLjw7oWZBkQmKBpY26b7Y7lAOZBz12zR6VLL2qbwliADR66qpollKEkHwFwBWFcyekFmMEZALDPK8wg");
+  
   }
 
   //Called at the start of the thread.
   void run() {
    
     checkForNewImages();
+ 
+    Connection<com.restfb.types.Photo> myFeed = facebookClient.fetchConnection("me/home", com.restfb.types.Photo.class);
+    //req.setAttribute("photosList",photosList);
     
-    //Object page = facebookClient.fetchObject("me", Post.class); 
-
-    //println(facebookClient.fetchConnection(facebookClient.getComChannel().getChannelId() +"/home", Post.class, paramsList.toArray(new Parameter[0])).getData());
-    //println(page);
+    println(myFeed);
     
-    Connection<Photo> photos = facebookClient.fetchConnection("me/photos", Photo.class);
-    List<Photo> photosList = photos.getData();
-    println(photosList);
-    
-    for(Photo pic : photosList)
+    for (List<com.restfb.types.Photo> photoList : myFeed)
     {
-       println(pic); 
-      
+      for(com.restfb.types.Photo photo : photoList)
+      {
+        println("Post: " + photo.getPicture());
+        String url = photo.getPicture();
+        
+        //String url = null;
+        if(url != null)
+        {
+          println("pushing!");
+          delegate.pushContent(new Content(loadImage(url), "", Source.FACEBOOK));
+        }
+      }
     }
     
-    //req.setAttribute("photosList",photosList);
+    
+    //Connection<com.restfb.types.Post> myFeed = facebookClient.fetchConnection("me/home", )
     
     while (true)
     {
-      println("thread");
-
       try { 
         this.sleep(10000);
       }

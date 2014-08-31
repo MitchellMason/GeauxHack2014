@@ -44,8 +44,8 @@ void setup() {
   delegate = new ProviderDelegate(this);
   hdPro = new HardDriveProvider(delegate);
 
-  tmblrPro = new TumblrProvider(delegate);
-  tmblrPro.start();
+  //tmblrPro = new TumblrProvider(delegate);
+  //tmblrPro.start();
   
   facebkPro = new FacebookProvider(delegate);
   facebkPro.start();

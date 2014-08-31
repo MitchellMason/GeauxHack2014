@@ -1,11 +1,11 @@
-import com.github.jreddit.entity.Subreddit;
-import com.github.jreddit.entity.User;
-import com.github.jreddit.exception.RedditError;
-import com.github.jreddit.exception.RetrievalFailedException;
-import com.github.jreddit.retrieval.ExtendedSubreddits;
-import com.github.jreddit.retrieval.Subreddits;
-import com.github.jreddit.utils.restclient.HttpRestClient;
-import com.github.jreddit.utils.restclient.RestClient;
+/*import com.github.*;
+//import com.github.jreddit.entity.User;
+//import com.github.jreddit.exception.RedditError;
+//import com.github.jreddit.exception.RetrievalFailedException;
+//import com.github.jreddit.retrieval.ExtendedSubreddits;
+//import com.github.jreddit.retrieval.Subreddits;
+//import com.github.jreddit.utils.restclient.HttpRestClient;
+//import com.github.jreddit.utils.restclient.RestClient;
 import java.util.HashMap;
 import java.util.List;
 
@@ -45,11 +45,6 @@ class RedditProvider extends ContentProvider {
    
     checkForNewImages();
     
-    //Object page = facebookClient.fetchObject("me", Post.class); 
-
-    //println(facebookClient.fetchConnection(facebookClient.getComChannel().getChannelId() +"/home", Post.class, paramsList.toArray(new Parameter[0])).getData());
-    //println(page);
-    
     Connection<Photo> photos = facebookClient.fetchConnection("me/photos", Photo.class);
     List<Photo> photosList = photos.getData();
     println(photosList);
@@ -77,7 +72,7 @@ class RedditProvider extends ContentProvider {
   //Force one photo to pull into the queue
   Content forceNextPicture() {
 
-/*
+
     String url = pic.getSizes().get(0).getUrl();
 
     if (!usedPics.containsKey(url))
@@ -86,14 +81,14 @@ class RedditProvider extends ContentProvider {
       usedPics.put(url, null);
       return new Content(loadImage(url), "", Source.TUMBLR);
     }
-*/
+
 
     return null;
   }
 
   void checkForNewImages()
   { 
-    /*
+    
     List<Post> posts;
 
     String url = pic.getSizes().get(0).getUrl();
@@ -109,22 +104,22 @@ class RedditProvider extends ContentProvider {
     {
       return;
     }
-    */
+    
   }
 
   void loadPicsToQueue() {
-/*
-    PImage[] images = loadPics(); 
+
+   PImage[] images = loadPics(); 
 
     for (PImage image : images)
     {
       delegate.pushContent(new Content(image, null, Source.TUMBLR));
     }
-  */}
+  }
 
   PImage[] loadPics() {
 return null;
-/*
+
     ArrayList<PImage> tempListOfPics = new ArrayList<PImage>();
 
     //User user = client.user();
@@ -159,7 +154,7 @@ return null;
     print("Loaded pictures from HD: ");
     println(retList);
     return retList;
-    */
+    
   }
 }
-
+*/
