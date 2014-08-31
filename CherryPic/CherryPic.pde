@@ -14,6 +14,7 @@ final int frameSwitchDelay = 60 * 4;
 ProviderDelegate delegate;
 HardDriveProvider hdPro;
 TumblrProvider tmblrPro;
+FacebookProvider facebkPro;
 int frameCounter = 178;
 
 /**********Graphics vars**********/
@@ -39,6 +40,9 @@ void setup() {
 
   tmblrPro = new TumblrProvider(delegate);
   tmblrPro.start();
+  
+  facebkPro = new FacebookProvider(delegate);
+  facebkPro.start();
 
   //Get first few pictures and get them into the screen
   for (int i=0; i<5; i++) {
@@ -52,7 +56,6 @@ void draw() {
   frameCounter++;
 
   background(0);
->>>>>>> aa8f7804d2fe53050e29a247977d8e436b4e1f88
   currentImage.drawMe(this);
 
   //See if we need to change the picture yet.

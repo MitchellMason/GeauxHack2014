@@ -2,19 +2,15 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tumblr.jumblr.JumblrClient;
 import com.tumblr.jumblr.types.Blog;
+import com.tumblr.jumblr.types.Photo;
 import com.tumblr.jumblr.types.PhotoPost;
 import com.tumblr.jumblr.types.Post;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.HashMap;
 
+//Uses the Jumblr Client library
 class TumblrProvider extends ContentProvider {
 
-  String pathToPics = "/images";
   PImage loadedPics[];
   JumblrClient client;
   HashMap usedPics = new HashMap();
@@ -34,11 +30,13 @@ class TumblrProvider extends ContentProvider {
 
   //Called at the start of the thread.
   void run() {
+    checkForNewImages();
+    
     while(true)
     {
       println("thread");
       
-      try { this.sleep(1000); }
+      try { this.sleep(10000); }
       catch (InterruptedException ie) {}
     }
   }
@@ -60,7 +58,7 @@ class TumblrProvider extends ContentProvider {
 
           if (!usedPics.containsKey(url))
           {
-            //println("loaded pic at " + url);
+            println("loaded pic at " + url);
             usedPics.put(url, null);
             return new Content(loadImage(url), "", Source.TUMBLR);
           }
@@ -91,11 +89,8 @@ class TumblrProvider extends ContentProvider {
         for (Photo pic : photos)
         {
           String url = pic.getSizes().get(0).getUrl();
-
           if (!usedPics.containsKey(url))
           {
-            println("loaded pic at " + url);
-            usedPics.put(url, null);
             delegate.pushContent(new Content(loadImage(url), "", Source.TUMBLR));
           }
           else
