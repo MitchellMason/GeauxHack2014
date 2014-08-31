@@ -50,19 +50,19 @@ class ScreenImage {
     //Draw the image depending on whether we're in the process of changing it or not. 
     if (!isChangingImage) {
       tint(color(255), 255);
-      main.imageMode(CENTER);
-      main.image(currImage, width / 2, height / 2 + iconHeight);
+      main.imageMode(CORNERS);
+      main.image(currImage, (width / 2) - (currImage.width / 2), max((height/2) - (currImage.height/2) - iconHeight,iconHeight + 20));
     } else {
       switch(transition) {
       case NONE: //TODO make transition
       case SWIPE://TODO make transition 
       case FADE:
-        main.imageMode(CENTER);
+        main.imageMode(CORNERS);
         float percentComplete = (((float)frameCount - (float)frameTransitionStarted) / transitionTime);
         tint(255, percentComplete * 255);
-        main.image(nextImage, width / 2, height / 2+ iconHeight);
+        main.image(nextImage,(width / 2) - (nextImage.width / 2), max((height/2) - (nextImage.height/2) - iconHeight,iconHeight + 20));
         tint(255, (1.0f - percentComplete) * 255);
-        main.image(currImage, width / 2, height / 2+ iconHeight);
+        main.image(currImage, (width / 2) - (currImage.width / 2), max((height/2) - (currImage.height/2) - iconHeight,iconHeight + 20));
         //If we're done changing the image, reset the vars. 
         if (frameCount == frameTransitionStarted + transitionTime -1) {
           debugPrint("Done changing images out", "ScreenImage.drawMe()");
