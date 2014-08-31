@@ -15,7 +15,7 @@ class HardDriveProvider extends ContentProvider {
   }
 
   Content forceNextPicture() {
-    return new Content(loadedPics[(int)random(0, loadedPics.length)], null, Source.HARDDRIVE);
+    return new Content(loadedPics[(int)random(0, loadedPics.length)], "This is a test, courtesy of your hard drive.", Source.HARDDRIVE);
   }
 
   PImage[] loadPics() {
