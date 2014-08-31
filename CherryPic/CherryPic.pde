@@ -6,16 +6,15 @@ final int screenHeight = 720;
 //Dimensions of the area pictures can be drawn.
 final int picAreaHeight= 600;
 final int picAreaWidth = 1000;
-//Time until the frame changes
-int framesUntilNextPicture = 60 * 4;
+final int iconHeight   = screenHeight - picAreaHeight;
+//Switch the picture on this frame#
+int picSwitchFrame = 60 * 4;
+final int frameSwitchDelay = 60 * 4;
 //Content Providers
 ProviderDelegate delegate;
 HardDriveProvider hdPro;
 TumblrProvider tmblrPro;
 int frameCounter = 178;
-
-/**********Net vars**********/
-
 
 /**********Graphics vars**********/
 //Maybe make a color scheme? 
@@ -24,6 +23,9 @@ ArrayList<Content> contentQueue;
 final int transitionTime = 60; //Time until a transition finishes. 
 //index of the current image from the contentqueue
 int contentQueueIndex;
+final color baseColor         = color(255,0,101);
+final color brightAccentColor = color(255,234,25);
+final color darkAccentColor   = color(9,148,178);
 
 void setup() {
   //Init graphics
@@ -38,8 +40,6 @@ void setup() {
   tmblrPro = new TumblrProvider(delegate);
   tmblrPro.start();
 
-  //tmblrPro.loadPicsToQueue();
-
   //Get first few pictures and get them into the screen
   for (int i=0; i<5; i++) {
     contentQueue.add(hdPro.forceNextPicture());
@@ -52,13 +52,15 @@ void draw() {
   frameCounter++;
 
   background(0);
+>>>>>>> aa8f7804d2fe53050e29a247977d8e436b4e1f88
   currentImage.drawMe(this);
 
   //See if we need to change the picture yet.
   //TODO make is so every change, the wait time is reset.
-  if (frameCount % framesUntilNextPicture == framesUntilNextPicture -1) {
+  if (frameCount == picSwitchFrame) {
     debugPrint("Time up! Switching image.", "main.draw()");
     proceedToNextImage();
+    picSwitchFrame = frameCount + frameSwitchDelay;
   }
 
   //if there's a comment, draw it
@@ -68,11 +70,6 @@ void draw() {
 
   //Draw the title bar and logo
   drawUI();
-
-  if (frameCounter > 190)
-  {
-    tmblrPro.checkForNewImages();
-  }
 }
 
 
@@ -83,6 +80,11 @@ void drawCommentBox() {
 
 //Draw the bar at the top with the logos. 
 void drawUI() {
+  stroke(0);
+  fill(brightAccentColor);
+  rect(0,0,width, iconHeight);
+  fill(darkAccentColor);
+  rect(0,0,iconHeight,iconHeight);
 }
 
 //Adds an image to the queue, and tosses it up front if it's urgent enough.
@@ -113,6 +115,7 @@ void proceedToNextImage() {
   debugPrint("New content queue index is " + contentQueueIndex, "proceedToNextImage()");
 
   currentImage.changeImage(temp.image);
+  picSwitchFrame = frameCount + frameSwitchDelay;
 }
 
 //Called when the app exits. Use this to quit all threads, close all network jobs, etc.
