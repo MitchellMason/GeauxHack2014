@@ -15,33 +15,35 @@ class TumblrProvider extends ContentProvider {
   JumblrClient client;
   HashMap usedPics = new HashMap();
 
-  TumblrProvider(ProviderDelegate delegate) {
-    super(delegate);
-
+  TumblrProvider(ProviderDelegate delegate) {    
+    super (delegate);
     client = new JumblrClient(
-      "IMsypM9lJL3Xhkxn3mNGWbQrm8Pfzb4kE3Z7BDQtQ24T5alp2j", 
-      "WEnNITaXYPBdUcPrV1wRAARn9DY3cthtqRfPs6my1SIm3kw6AJ"
+    "IMsypM9lJL3Xhkxn3mNGWbQrm8Pfzb4kE3Z7BDQtQ24T5alp2j", 
+    "WEnNITaXYPBdUcPrV1wRAARn9DY3cthtqRfPs6my1SIm3kw6AJ"
       );
     client.setToken(
-      "cSuwaPdeLMt3ewCGyamQ5rV6dkw75ZSvwfuZSqtgwtwr9FhpYF", 
-      "I1RjJ447nYlMFDDysn23NWIHC1sYsf8Sz887PftJQJ5GyWeHWE"
+    "cSuwaPdeLMt3ewCGyamQ5rV6dkw75ZSvwfuZSqtgwtwr9FhpYF", 
+    "I1RjJ447nYlMFDDysn23NWIHC1sYsf8Sz887PftJQJ5GyWeHWE"
       );
   }
 
   //Called at the start of the thread.
   void run() {
     checkForNewImages();
-    
-    while(true)
+
+    while (true)
     {
-      try { this.sleep(10000); }
-      catch (InterruptedException ie) {}
+      try { 
+        this.sleep(10000);
+      }
+      catch (InterruptedException ie) {
+      }
     }
   }
 
   //Force one photo to pull into the queue
   Content forceNextPicture() {
-
+    debugPrint("Ow!", "TumblrPro");
     List<Post> posts = client.userDashboard();
 
     for (Post post : posts)
@@ -90,8 +92,7 @@ class TumblrProvider extends ContentProvider {
           if (!usedPics.containsKey(url))
           {
             delegate.pushContent(new Content(loadImage(url), "", Source.TUMBLR));
-          }
-          else
+          } else
           {
             return;
           }
@@ -145,7 +146,7 @@ class TumblrProvider extends ContentProvider {
 
 
     PImage[] retList = new PImage[tempListOfPics.size()];
-    for (int i=0; i<tempListOfPics.size(); i++) {
+    for (int i=0; i<tempListOfPics.size (); i++) {
       retList[i] = tempListOfPics.get(i);
     }
 

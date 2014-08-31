@@ -1,10 +1,10 @@
 import java.util.Date;
 
 /**********Logic vars**********/
-final boolean ISDEBUG = true; //TODO set to false for presentation. 
+final boolean ISDEBUG = false; //TODO set to false for presentation. 
 //Screen dimensions
-final int screenWidth  = 1280;
-final int screenHeight = 720;
+final int screenWidth  = 1920;
+final int screenHeight = 1080;
 //Dimensions of the area pictures can be drawn.
 final int picAreaHeight= screenHeight - 150;
 final int picAreaWidth = 1000;
@@ -17,9 +17,9 @@ ProviderDelegate delegate;
 HardDriveProvider hdPro;
 TumblrProvider tmblrPro;
 FacebookProvider facebkPro;
-LeapDelegate leap;
+LeapDelegate leap = new LeapDelegate(this);
 Date date = new Date();
-Source currentContentSource = Source.TUMBLR; //ToStart
+Source currentContentSource = Source.FACEBOOK; //ToStart
 
 /**********Graphics vars**********/
 //Maybe make a color scheme? 
@@ -50,7 +50,7 @@ void setup() {
 
   tmblrPro = new TumblrProvider(delegate);
   tmblrPro.start();
-  
+
   facebkPro = new FacebookProvider(delegate);
   facebkPro.start();
 
@@ -88,7 +88,7 @@ void draw() {
   //TODO make is so every change, the wait time is reset.
   if (frameCount == picSwitchFrame) {
     debugPrint("Time up! Switching image.", "main.draw()");
-    proceedToNextImage();
+    proceedToNextImage(false);
     picSwitchFrame = frameCount + frameSwitchDelay;
   }
 
@@ -155,35 +155,63 @@ void drawUI() {
 
 //Adds an image to the queue, and tosses it up front if it's urgent enough.
 void addImageToQueue(Content newContent, boolean isUrgent) {
+  if (newContent == null || newContent.getPicture() == null) {
+    debugPrint("Got something null. Throwing away.", "addToImageQueue");
+    return;
+  }
+  switch(newContent.getSource()) {
+  case HARDDRIVE:
+    if (isUrgent) {
+      debugPrint("New urgent Image added to queue", "HD");
+    } else {
+      debugPrint("New non-urgent Image added to queue", "HD");
+    }
+    break;
+  case TUMBLR:
+    if (isUrgent) {
+      debugPrint("New urgent Image added to queue", "Tumblr");
+    } else {
+      debugPrint("New non-urgent Image added to queue", "Tumblr");
+    }
+    break;
+  case FACEBOOK:
+    if (isUrgent) {
+      debugPrint("New urgent Image added to queue", "FB");
+    } else {
+      debugPrint("New non-urgent Image added to queue", "FB");
+    }
+  default: 
+    break;
+  }
   if (isUrgent) {
-    debugPrint("New urgent Image added to queue", "addImageToQueue");
     Content toSwitch = allContent.get(contentQueueIndex + 1);
     allContent.set(contentQueueIndex+1, newContent);
     allContent.add(toSwitch);
-    proceedToNextImage();
+    proceedToNextImage(false);
   } else {
-    debugPrint("New non-urgent Image added to queue", "addImageToQueue");
     allContent.add(newContent);
   }
 }
 
 //Switches to the next image in the queue
-void proceedToNextImage() {
-  Content temp;
-  if (contentQueueIndex+1 >= channelContent.size()) {
+void proceedToNextImage(boolean isUrgent) {
+  if (!isUrgent) {
+    Content temp;
+    if (contentQueueIndex+1 >= channelContent.size()) {
+      contentQueueIndex = 0;
+    } else if (channelContent.size() ==0) {
+      debugPrint("ChannelContent size is zero! This is really bad.", "proceedToNextImage");
+    } else {
+      contentQueueIndex++;
+    }
+    temp = channelContent.get(contentQueueIndex);
+    currentImage.changeImage(temp.image);
+  } else {
     contentQueueIndex = 0;
-  } 
-  else if(channelContent.size() ==0){
-    debugPrint("ChannelContent size is zero! This is really bad.", "proceedToNextImage");
+    currentImage.immediateChangeImage(channelContent.get(0).getPicture(), channelContent.get(1).getPicture()); //TODO fix atrocity
   }
-  else {
-    contentQueueIndex++;
-  }
-  temp = channelContent.get(contentQueueIndex);
-  debugPrint("New content queue index is " + contentQueueIndex, "proceedToNextImage()");
-
-  currentImage.changeImage(temp.image);
   picSwitchFrame = frameCount + frameSwitchDelay;
+  debugPrint("New content queue index is " + contentQueueIndex + " with content source " + channelContent.get(contentQueueIndex).getSource(), "proceedToNextImage()");
 }
 
 //Called when the app exits. Use this to quit all threads, close all network jobs, etc.
@@ -202,7 +230,7 @@ void changeChannel() {
     debugPrint("New channel is FB", "changeChannel");
     break;
   case FACEBOOK:
-      currentContentSource = Source.HARDDRIVE;
+    currentContentSource = Source.HARDDRIVE;
     debugPrint("New channel is HD", "changeChannel");
     break;
   }
@@ -212,10 +240,11 @@ void changeChannel() {
       channelContent.add(pic);
     }
   }
-  proceedToNextImage();
+  contentQueueIndex = 0;
+  proceedToNextImage(true);
 }
 
-void changeChannel(Source target){
+void changeChannel(Source target) {
   debugPrint("Changing channel by force", "changeChannel");
   channelContent.clear();
   for (Content pic : allContent) {
@@ -223,13 +252,13 @@ void changeChannel(Source target){
       channelContent.add(pic);
     }
   }
-  proceedToNextImage();
+  proceedToNextImage(true);
 }
 
 void mouseClicked() {
   if (ISDEBUG) {
     debugPrint("Mouse clicked. Moving image.", "mouseClicked()");
-    proceedToNextImage();
+    proceedToNextImage(false);
   }
 }
 
@@ -245,6 +274,49 @@ void keyPressed() {
 void debugPrint(String message, String sender) {
   if (ISDEBUG) {
     println(sender + "--->" + message);
+  }
+}
+
+void leapOnKeyTapGesture(de.voidplus.leapmotion.KeyTapGesture g) {
+  int     id                  = g.getId();
+  de.voidplus.leapmotion.Finger  finger              = g.getFinger();
+  PVector position            = g.getPosition();
+  PVector direction           = g.getDirection();
+  long    duration            = g.getDuration();
+  float   duration_seconds    = g.getDurationInSeconds();
+
+  changeChannel();
+  println("KeyTapGesture: "+id);
+}
+
+void leapOnScreenTapGesture(de.voidplus.leapmotion.ScreenTapGesture g) {
+  changeChannel();
+  println("ScreenTapGesture");
+}
+
+void leapOnSwipeGesture(de.voidplus.leapmotion.SwipeGesture g, int state) {
+  switch(state) {
+  case 1: // Start
+    proceedToNextImage(false);
+    break;
+  case 2: // Update
+    break;
+  case 3: // Stop
+    println("SwipeGesture: "+id);
+    break;
+  }
+}
+
+void leapOnCircleGesture(de.voidplus.leapmotion.CircleGesture g, int state) {
+  switch(state) {
+  case 1: // Start
+    changeChannel();
+    break;
+  case 2: // Update
+    break;
+  case 3: // Stop
+    println("CircleGesture");
+    break;
   }
 }
 

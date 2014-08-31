@@ -18,7 +18,7 @@ class FacebookProvider extends ContentProvider {
 
   FacebookProvider(ProviderDelegate delegate) {
     super(delegate);
-    facebookClient = new DefaultFacebookClient("CAACEdEose0cBAKK3eICE2VFJERbtAVCyPugvUPa6QfJ9LYKIua8FPxWTtLE0clP8ybj9LqCsojO92uyY5UN8KkaqtgCUKJGIWMpCmS5iLKYI3n8X1I9s3UmoLDWZBtU94zB6CHTSANd56eKF1sk0yXOITIZA8VbYFdxYU4N60rOI6NfrMgrDOaZCsJHkGwZB3I88fnyhZCktZAhZCiM21UT");  
+    facebookClient = new DefaultFacebookClient("CAACEdEose0cBAOmZCZAq6WmoTcXzXhMkNsRBt4gqzuwZCLmaYcS1XiSQt1mk7yQGY91v4hSrC1zuIAZB9GA6HlarZCUCCRrjwI18L0gmp3Q5QQFiOjXp4GWFwgiGO9ph3aZClCSZClLXr1R2nzXZCR8e59ZACZBtEVvZBF9ZC4Jd8d8ZAuwQ0ZBvbIlPGYZCF2Ji2OcHapeJ7ZBbHIx3l8g1w5NvXa2w");  
   }
 
   //Called at the start of the thread.

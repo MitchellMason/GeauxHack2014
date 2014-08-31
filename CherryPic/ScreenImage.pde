@@ -16,8 +16,12 @@ class ScreenImage {
 
   //Resizes the images in the queue to an appropriate size
   void sizeImage(PImage img) {
+    if(img == null){
+      debugPrint("Null image fed into sizeImage", "sizeImage");
+      return;
+    }
     float percentOff;
-
+    
     //adjust for height
     if (img.height > picAreaHeight) {
       percentOff = (float)picAreaHeight / (float)img.height;
@@ -40,6 +44,14 @@ class ScreenImage {
   //TODO make this do the proper transition
   void changeImage(PImage next) {
     tempImage = next;
+    frameTransitionStarted = frameCount;
+    transition = getRandomTranstion();
+    isChangingImage = true;
+  }
+  
+  void immediateChangeImage(PImage next, PImage afterThat){
+    nextImage = next;
+    tempImage = afterThat;
     frameTransitionStarted = frameCount;
     transition = getRandomTranstion();
     isChangingImage = true;
