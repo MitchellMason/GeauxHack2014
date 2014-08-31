@@ -34,8 +34,6 @@ class TumblrProvider extends ContentProvider {
     
     while(true)
     {
-      println("thread");
-      
       try { this.sleep(10000); }
       catch (InterruptedException ie) {}
     }

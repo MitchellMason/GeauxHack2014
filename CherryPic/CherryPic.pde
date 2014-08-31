@@ -3,8 +3,8 @@ import java.util.Date;
 /**********Logic vars**********/
 final boolean ISDEBUG = true; //TODO set to false for presentation. 
 //Screen dimensions
-final int screenWidth  = 1920;
-final int screenHeight = 1080;
+final int screenWidth  = 1280;
+final int screenHeight = 720;
 //Dimensions of the area pictures can be drawn.
 final int picAreaHeight= screenHeight - 150;
 final int picAreaWidth = 1000;
@@ -16,7 +16,7 @@ final int frameSwitchDelay = 60 * 4;
 ProviderDelegate delegate;
 HardDriveProvider hdPro;
 TumblrProvider tmblrPro;
-//FacebookProvider facebkPro;
+FacebookProvider facebkPro;
 LeapDelegate leap;
 Date date = new Date();
 Source currentContentSource = Source.TUMBLR; //ToStart

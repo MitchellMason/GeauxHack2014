@@ -18,9 +18,7 @@ class FacebookProvider extends ContentProvider {
 
   FacebookProvider(ProviderDelegate delegate) {
     super(delegate);
-    facebookClient = new DefaultFacebookClient("CAACEdEose0cBAJWXev9oTIImMEtyJ3lG4yVXHhVkJ5i2GK4EGoiYvIVuGeCjwElsxFDeEZCltbXbnJy1ivd7eGVh5fgDevWEjVDmzUZA4a6ZCfX2YshRZAN3fII4LcTBTIlpzzPH73oKv3fZB5MvajaZBT4tkTCMXB7MHeMC1nTLNbQRFFy5QVhQiJxE0MURoaWbNcVG5fZB3NrZCHj3r5du");
-    //facebookClient = new DefaultFacebookClient("CAACzPrVD3z8BAMeJqYhqt3l5baGgZB6QSjRIFYkVQc5kJoJDSNX8UMNZBrJhaEMHdVJcKIBWKCwzmyBjqWhquLQCW3EGGX6g2G5ugFsXkonVHpMMxEHZA58hRU0KwubPWJttepylLjw7oWZBkQmKBpY26b7Y7lAOZBz12zR6VLL2qbwliADR66qpollKEkHwFwBWFcyekFmMEZALDPK8wg");
-  
+    facebookClient = new DefaultFacebookClient("CAACEdEose0cBAKK3eICE2VFJERbtAVCyPugvUPa6QfJ9LYKIua8FPxWTtLE0clP8ybj9LqCsojO92uyY5UN8KkaqtgCUKJGIWMpCmS5iLKYI3n8X1I9s3UmoLDWZBtU94zB6CHTSANd56eKF1sk0yXOITIZA8VbYFdxYU4N60rOI6NfrMgrDOaZCsJHkGwZB3I88fnyhZCktZAhZCiM21UT");  
   }
 
   //Called at the start of the thread.
@@ -28,22 +26,42 @@ class FacebookProvider extends ContentProvider {
    
     checkForNewImages();
  
-    Connection<com.restfb.types.Photo> myFeed = facebookClient.fetchConnection("me/home", com.restfb.types.Photo.class);
+    Connection<com.restfb.types.Photo> myFeed = facebookClient.fetchConnection("me/home", com.restfb.types.Photo.class, com.restfb.Parameter.with("width","600"), com.restfb.Parameter.with("height","600"));
     //req.setAttribute("photosList",photosList);
     
-    println(myFeed);
+    /*
+    ArrayList<String> ids = new ArrayList<String>();    
+    for (List<com.restfb.types.Post> postList : myFeed)
+    {
+      for(com.restfb.types.Post post : postList)
+      {
+          String temp = post.getObjectId();
+          if(temp != null)
+            ids.add(temp);
+      } 
+    }
+    
+    debugPrint("First ID is " + ids.get(0),"FBProvider");
+    
+    ArrayList<com.restfb.types.Photo> myPhotos = new ArrayList<com.restfb.types.Photo>();
+    for(String id : ids){
+      com.restfb.types.Photo temp = facebookClient.fetchObject(id, com.restfb.types.Photo.class);
+    }
+    debugPrint("First photo is " + myPhotos.get(0),"FBProvider");
+    */
     
     for (List<com.restfb.types.Photo> photoList : myFeed)
     {
       for(com.restfb.types.Photo photo : photoList)
       {
-        println("Post: " + photo.getPicture());
+        //println("Post: " + photo.getPicture());
         String url = photo.getPicture();
         
         //String url = null;
         if(url != null)
         {
-          println("pushing!");
+          //println("pushing!");
+          debugPrint("Photo added from FB with URL " + url, "FBPro");
           delegate.pushContent(new Content(loadImage(url), "", Source.FACEBOOK));
         }
       }
