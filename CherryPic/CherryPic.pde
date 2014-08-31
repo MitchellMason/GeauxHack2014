@@ -26,10 +26,11 @@ final int transitionTime = 60; //Time until a transition finishes.
 //index of the current image from the contentqueue
 int contentQueueIndex;
 //color palette
-final color baseColor         = color(175);
+final color baseColor         = color(225);
 final color brightAccentColor = color(57,234,58);
 final color darkAccentColor   = color(9, 148, 178);
-PImage logo;
+PImage logoSmall;
+PImage logoBig;
 PImage[] socialMediaLogos = new PImage[4];
 
 void setup() {
@@ -46,13 +47,15 @@ void setup() {
 
   //heavy loading:
   hdPro.init();
-  logo = loadImage("Logos/CherryPicLogo.png");
+  logoBig   = loadImage("Logos/CherryPicLogo.png");
+  logoSmall = loadImage("Logos/CherryPicLogo.png"); //TODO clone the Big one. THIS IS TERRIBLE
   socialMediaLogos[0] = loadImage("Logos/Facebook.png");
   socialMediaLogos[1] = loadImage("Logos/Tumblr.png");
   socialMediaLogos[2] = loadImage("Logos/Twitter.png");
   socialMediaLogos[3] = loadImage("Logos/Reddit.png");
 
-  logo.resize((int)(iconHeight / (1/1.438)), iconHeight);
+  logoSmall.resize((int)(iconHeight / (1/1.438)), iconHeight);
+  logoBig.resize(logoBig.width /2, (screenHeight - iconHeight) /2);
   for (int i=0; i<socialMediaLogos.length; i++) {
     socialMediaLogos[i].resize(iconHeight, iconHeight);
   }
@@ -67,6 +70,10 @@ void setup() {
 
 void draw() {
   background(baseColor);
+  tint(255,100);
+  image(logoBig, width - logoBig.width, height - logoBig.height);
+  tint(255,255);
+  
   currentImage.drawMe(this);
 
   //See if we need to change the picture yet.
@@ -99,7 +106,7 @@ void drawUI() {
   fill(brightAccentColor);
   rect(0, 0, width, iconHeight);
   fill(darkAccentColor);
-  rect(0, 0, logo.width +1, iconHeight);
+  rect(0, 0, logoSmall.width +1, iconHeight);
   
   //Line for thickness at the top
   stroke(255);
@@ -108,8 +115,8 @@ void drawUI() {
   //Draw the logo
   imageMode(CORNERS);
   tint(255, 255);
-  image(logo, 2, 0);
-
+  image(logoSmall, 2, 0);
+  
   //Draw the image channel
   Source contentSource = contentQueue.get(0).getSource();
   switch(contentSource) {
@@ -125,13 +132,15 @@ void drawUI() {
   //temporarily tell the user they're looking at the image source
   if(frameCount < 6 * 60){
     textSize(15);
-    fill(255);
-    text("← Media channel. Swipe to change.",iconHeight * 2,300);
+    fill(darkAccentColor);
+    text("← Media channel",iconHeight * 3,height * .75);
+    text("  Swipe to change", iconHeight* 3,height * .75 + 15);
   }
   
   //print the system time
   textSize(15);
   fill(0);
+  date = new Date();
   text(date.toString().substring(0,19), width - textWidth(date.toString().substring(0,19)) - 10, iconHeight - 3);
 }
 
