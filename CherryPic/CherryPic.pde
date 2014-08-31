@@ -1,4 +1,5 @@
 import java.util.Date;
+import com.sendgrid.*;
 
 /**********Logic vars**********/
 final boolean ISDEBUG = false; //TODO set to false for presentation. 
@@ -20,6 +21,7 @@ FacebookProvider facebkPro;
 LeapDelegate leap = new LeapDelegate(this);
 Date date = new Date();
 Source currentContentSource = Source.FACEBOOK; //ToStart
+SendGrid sendGrid = new SendGrid("cherrypic", "geauxhack1");
 
 /**********Graphics vars**********/
 //Maybe make a color scheme? 
@@ -77,6 +79,22 @@ void setup() {
   contentQueueIndex = 0;
   currentImage = new ScreenImage(logoBig, logoBig);
   changeChannel();
+
+  //Test email
+  SendGrid.Email email = new SendGrid.Email();
+  email.addTo("thefreemason11@gmail.com");
+  email.addToName("Example Guy");
+  email.setFrom("GeauxCherryPic@gmail.com");
+  email.setSubject("Hello World");
+  email.setText("My first email through SendGrid");
+
+  try {
+    SendGrid.Response response = sendGrid.send(email);
+    System.out.println(response.getMessage());
+  }
+  catch (SendGridException e) {
+    System.err.println(e);
+  }
 }
 
 void draw() {
@@ -214,10 +232,6 @@ void proceedToNextImage(boolean isUrgent) {
   debugPrint("New content queue index is " + contentQueueIndex + " with content source " + channelContent.get(contentQueueIndex).getSource(), "proceedToNextImage()");
 }
 
-//Called when the app exits. Use this to quit all threads, close all network jobs, etc.
-void exit() {
-}
-
 void changeChannel() {
   debugPrint("Changing channel", "changeChannel");
   switch(currentContentSource) {
@@ -302,7 +316,7 @@ void leapOnSwipeGesture(de.voidplus.leapmotion.SwipeGesture g, int state) {
   case 2: // Update
     break;
   case 3: // Stop
-    println("SwipeGesture: "+id);
+    println("SwipeGesture");
     break;
   }
 }
