@@ -2,7 +2,7 @@ import java.util.Date;
 import com.sendgrid.*;
 
 /**********Logic vars**********/
-final boolean ISDEBUG = false; //TODO set to false for presentation. 
+final boolean ISDEBUG = true; //TODO set to false for presentation. 
 //Screen dimensions
 final int screenWidth  = 1920;
 final int screenHeight = 1080;
@@ -38,7 +38,10 @@ final color brightAccentColor = color(57, 234, 58);
 final color darkAccentColor   = color(9, 148, 178);
 PImage logo;
 PImage logoBig;
+PImage emailNot;
 PImage[] socialMediaLogos = new PImage[5];
+boolean transferringEmail;
+int holdEmailUntil = 0;
 
 void setup() {
   //Init graphics
@@ -66,6 +69,7 @@ void setup() {
   socialMediaLogos[3] = loadImage("Logos/Reddit.png");
   socialMediaLogos[4] = loadImage("Logos/HD.png");
   font = loadFont("data/HelveticaNeue-48.vlw");
+  emailNot = loadImage("data/email.jpeg");
 
   logo.resize((int)(iconHeight / (1/1.438)), iconHeight);
   for (int i=0; i<socialMediaLogos.length; i++) {
@@ -77,24 +81,8 @@ void setup() {
     addImageToQueue(hdPro.forceNextPicture(), false);
   };
   contentQueueIndex = 0;
-  currentImage = new ScreenImage(logoBig, logoBig);
+  currentImage = new ScreenImage(logoBig, loadImage("images/Boss2.png"));
   changeChannel();
-
-  //Test email
-  SendGrid.Email email = new SendGrid.Email();
-  email.addTo("thefreemason11@gmail.com");
-  email.addToName("Example Guy");
-  email.setFrom("GeauxCherryPic@gmail.com");
-  email.setSubject("Hello World");
-  email.setText("My first email through SendGrid");
-
-  try {
-    SendGrid.Response response = sendGrid.send(email);
-    System.out.println(response.getMessage());
-  }
-  catch (SendGridException e) {
-    System.err.println(e);
-  }
 }
 
 void draw() {
@@ -165,10 +153,17 @@ void drawUI() {
   }
 
   //print the system time
-  textSize(15);
-  fill(0);
+  textSize(screenHeight * .05);
+  fill(15);
   date = new Date();
-  text(date.toString().substring(0, 19), width - textWidth(date.toString().substring(0, 19)) - 10, iconHeight - 3);
+  text(date.toString().substring(0, 19), width - textWidth(date.toString().substring(0, 19)) - 10, screenHeight * .05);
+
+  //email
+  if (transferringEmail) {
+    imageMode(CENTER);
+    image(emailNot, width/ 2, (emailNot.height /2) + 2);
+    transferringEmail = (frameCount < holdEmailUntil);
+  }
 }
 
 //Adds an image to the queue, and tosses it up front if it's urgent enough.
@@ -280,6 +275,10 @@ void keyPressed() {
   if (ISDEBUG) {
     if (key == 'c') {
       changeChannel();
+    } else if (key == 'e') {
+      debugPrint("SENDING EMAIL **************************", "PRESSED E");
+      EmailSender mail = new EmailSender(this);
+      mail.start();
     }
   }
 }
@@ -311,7 +310,9 @@ void leapOnScreenTapGesture(de.voidplus.leapmotion.ScreenTapGesture g) {
 void leapOnSwipeGesture(de.voidplus.leapmotion.SwipeGesture g, int state) {
   switch(state) {
   case 1: // Start
-    proceedToNextImage(false);
+    EmailSender mail = new EmailSender(this);
+    mail.start();
+    proceedToNextImage(true);
     break;
   case 2: // Update
     break;
